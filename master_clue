@@ -66,6 +66,9 @@ billiard_room, hall, ballroom, study, lounge, dinning_room]
 
 class Game(object):
 
+    def pause(self):
+        proceed = raw_input("\nHit any key to continue:  \n")
+
     def intro(self):
         print "\nWelcome to Hayley's Text-Based Clue Game"
         print "This program will randomly select a murderer,"
@@ -126,6 +129,8 @@ class Game(object):
         self.answers_a = []
         self.answers_b = []
 
+        # print self.murder_weapon.name, self.crime_scene.name, self.murderer.name
+
     def detective_notebook(self):
 
         print "\n"
@@ -177,6 +182,7 @@ class Game(object):
         three randomly selected rooms. If you are in the
         Conservatory, Study, Kitchen, or Lounge you will be given
         the option to use the secret passageway."""
+
 
     def player_move_first(self):
 
@@ -392,76 +398,104 @@ class Game(object):
             pass
         else:
             print "Your guess did not return any clues from your opponents' hands."
-            print "Would you like to mark any of the items down as the answer?"
-            mark = raw_input("Type 'y' for yes and 'n' for no.  ")
 
-            while mark == "y":
-                print """ Do you want to indicate:
-                1. The murder?
-                2. The weapon?
-                3. The crime scene?
+    def accusation(self):
+
+
+        print "Would you like to view your current answers or add an answer to your file?"
+        add_ans = raw_input("Enter 'y' for 'yes' and 'n' for 'no'.  ")
+
+        while add_ans == 'y':
+            if len(self.answers) == 0:
+                print "You currently have no answers in your file."
+            else:
+                print "Currently in your answer file you have the following clues:"
+                if len(self.answers) == 1:
+                    print self.answers[0].name
+                if len(self.answers) == 2:
+                    print self.answers[0].name
+                    print self.answers[1].name
+                if len(self.answers) == 3:
+                    print self.answers[0].name
+                    print self.answers[1].name
+                    print self.answers[2].name
+
+
+            print "Select the type of clue you would like to add:"
+            print """
+            1. Suspect
+            2. Weapon
+            3. Room
+            4. Do not add clue
+
+            """
+            selection = input("Enter number corresponding to choice:  ")
+
+            if selection == 1:
+                print """
+                1. Reverend Green
+                2. Miss Scarlet
+                3. Professor Plum
+                4. Mrs. White
+                5. Mrs. Peacock
+                6. Colonel Mustard
 
                 """
-                solution = input("Enter number corresponding to your selection:  ")
+                add_suspect = input("Enter number corresponding to choice:  ")
+                self.answers.append(suspects[add_suspect - 1])
 
-                if solution == 1:
-                    print """Who is the murderer?
+            elif selection == 2:
+                print """
+                1. Knife
+                2. Candlestick
+                3. Revolver
+                4. Wrench
+                5. Rope
+                6. Lead Pipe
 
-                    1. Reverend Green
-                    2. Miss Scarlet
-                    3. Professor Plum
-                    4. Mrs. White
-                    5. Mrs. Peacock
-                    6. Colonel Mustard
+                """
+                add_weapon = input("Enter number corresponding to choice:  ")
+                self.answers.append(weapons[add_weapon - 1])
 
-                    """
-                    selection = input("Enter a number corresponding to your selection:  ")
-                    self.answers.append(suspects[selection-1])
+            elif selection == 3:
+                print """
+                1. Kitchen
+                2. Conservatory
+                3. Library
+                4. Billiard Room
+                5. Hall
+                6. Ballroom
+                7. Study
+                8. Lounge
+                9. Dining Room
 
-                elif solution == 2:
-                    print """What is the murder weapon?
+                """
+                add_room = input("Enter number corresponding to choice:  ")
+                self.answers.append(rooms[add_room - 1])
 
-                     1. Knife
-                     2. Candlestick
-                     3. Revolver
-                     4. Wrench
-                     5. Rope
-                     6. Lead Pipe
+            else:
+                pass
 
-                     """
-                    selection = input("Enter a number corresponding to your selection:  ")
-                    self.answers.append(weapons[selection-1])
+            print "Would you like to add any more answers to your file?"
+            add_ans = raw_input("Enter 'y' for 'yes' and 'n' for 'no':  ")
 
+        if len(self.answers) == 3:
+            print """ Would you like to check your answer file
+            against the confidential case file?"""
+
+            check_ans = raw_input("Enter 'y' for 'yes' and 'n' for 'no':  ")
+            if check_ans == "y":
+                if self.murderer in self.answers and self.murder_weapon in self.answers and self.crime_scene in self.answers:
+                    print "Congrats! You cracked the case!"
+                    print "It was %s, with the %s, in the %s" % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
+                    exit()
                 else:
-                    print """Where was the crime scene:
+                    print "There was an ERROR! Track that bug down Hayley!"
+                    exit()
+        else:
+            pass
 
-                    1. Kitchen
-                    2. Conservatory
-                    3. Library
-                    4. Billiard Room
-                    5. Hall
-                    6. Ballroom
-                    7. Study
-                    8. Lounge
-                    9. Dinning Room
 
-                    """
-                    selection = input("Enter a number corresponding to your selection:  ")
-                    self.answers.append(rooms[selection-1])
-
-                print "Do you want to enter any other answers? Enter 'y' for 'yes' and 'n' for 'no'."
-                mark = raw_input(">  ")
-
-                if len(self.answers) == 3:
-                    print "You have indicated a murder, a murder weapon, and a crime scene."
-                    print "This will now be checked against the confidential case file."
-                    if self.murderer in self.answers and self.murder_weapon in self.answers and self.crime_scene in self.answers:
-                        print "Congrats! You solved the crime!"
-                        print "It was %s, with the %s, in the %s." % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
-                        exit
-                    else:
-                        print "Something went wrong! Go get that Bug Hayley!"
-                        exit
 
     def computer_a_move_first(self):
         next_room_a = rooms[randint(0, len(rooms)-1)]
@@ -534,22 +568,22 @@ class Game(object):
                 print "You showed Player A %s." % next_room_a.name
                 self.gathered_clues_a.append(next_room_a)
             else:
-                if suspect_selection_a not in computer_a_hand:
-                    answers_a.append(suspect_selection_a)
-                if weapon_selection_a not in computer_a_hand:
-                    answers_a.append(weapon_selection_a)
-                if next_room_a not in computer_a_hand:
-                    answers_a.append(next_room_a)
+                if suspect_selection_a not in self.computer_a_hand:
+                    self.answers_a.append(suspect_selection_a)
+                if weapon_selection_a not in self.computer_a_hand:
+                    self.answers_a.append(weapon_selection_a)
+                if next_room_a not in self.computer_a_hand:
+                    self.answers_a.append(next_room_a)
 
             if len(self.answers_a) == 3:
                 print "Computer A would like to make an accusation."
-                if self.murderer in answers_a and self.murder_weapon in answers_a and self.crime_scene in answers_a:
+                if self.murderer in self.answers_a and self.murder_weapon in self.answers_a and self.crime_scene in self.answers_a:
                     print "Congrats Player A! You are correct"
                     print "It was %s, with the %s, in the %s." % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
-                    exit
+                    exit()
                 else:
                     print "There was an ERROR. Go Get That BUG HAYLEY."
-                    exit
+                    exit()
 
             return next_room_a
 
@@ -625,22 +659,22 @@ class Game(object):
                 print "Computer Player A has revealed a clue to Computer Player B."
 
             else:
-                if suspect_selection_b not in computer_b_hand:
-                    answers_b.append(suspect_selection_b)
-                if weapon_selection_b not in computer_b_hand:
-                    answers_b.append(weapon_selection_b)
-                if next_room_b not in computer_b_hand:
-                    answers_b.append(next_room_b)
+                if suspect_selection_b not in self.computer_b_hand:
+                    self.answers_b.append(suspect_selection_b)
+                if weapon_selection_b not in self.computer_b_hand:
+                    self.answers_b.append(weapon_selection_b)
+                if next_room_b not in self.computer_b_hand:
+                    self.answers_b.append(next_room_b)
 
             if len(self.answers_b) == 3:
                 print "Computer B would like to make an accusation."
-                if self.murderer in answers_b and self.murder_weapon in answers_b and self.crime_scene in answers_b:
+                if self.murderer in self.answers_b and self.murder_weapon in self.answers_b and self.crime_scene in self.answers_b:
                     print "Congrats Player B! You are correct"
                     print "It was %s, with the %s, in the %s." % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
-                    exit
+                    exit()
                 else:
                     print "There was an ERROR. Go Get That BUG HAYLEY."
-                    exit
+                    exit()
 
             return next_room_b
 
@@ -819,6 +853,7 @@ class Game(object):
             print "Computer Player B has revealed a clue to Computer Player A."
 
         else:
+            print "Computer player B does not have any of those clues in their hand."
             print "Computer Player A has guessed %s, with the %s, in the %s" % (suspect_selection_a.name, weapon_selection_a.name, next_room_a.name)
             print "Please indicate which clue you would like to share."
             print """
@@ -851,10 +886,10 @@ class Game(object):
                 if self.murderer in answers_a and self.murder_weapon in answers_a and self.crime_scene in answers_a:
                     print "Congrats Player A! You are correct"
                     print "It was %s, with the %s, in the %s." % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
-                    exit
+                    exit()
                 else:
                     print "There was an ERROR. Go Get That BUG HAYLEY."
-                    exit
+                    exit()
 
     def computer_b_move(self, next_room_b):
 
@@ -947,29 +982,52 @@ class Game(object):
                 if self.murderer in answers_b and self.murder_weapon in answers_b and self.crime_scene in answers_b:
                     print "Congrats Player B! You are correct"
                     print "It was %s, with the %s, in the %s." % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
-                    exit
+                    exit()
                 else:
                     print "There was an ERROR. Go Get That BUG HAYLEY."
-                    exit
+                    exit()
 
 
 
 a_game = Game()
 
 a_game.intro()
+a_game.pause()
 a_game.setup()
+a_game.pause()
 a_game.detective_notebook()
+a_game.move_explanation
+a_game.pause()
 next_room = a_game.player_move_first()
+a_game.pause()
 a_game.player_guess(next_room)
+a_game.pause()
 a_game.detective_notebook()
+a_game.pause()
+a_game.accusation()
+a_game.pause()
+a_game.detective_notebook()
+a_game.pause()
 next_room_a = a_game.computer_a_move_first()
+a_game.pause()
 next_room_b = a_game.computer_b_move_first()
-for n in range(0,400):
+a_game.pause()
+for n in range(0,100):
     a_game.detective_notebook()
+    a_game.pause()
     next_room = a_game.player_move(next_room)
+    a_game.pause()
     a_game.player_guess(next_room)
+    a_game.pause()
     a_game.detective_notebook()
+    a_game.pause()
+    a_game.accusation()
+    a_game.pause()
+    a_game.detective_notebook()
+    a_game.pause()
     next_room_a = a_game.computer_a_move(next_room_a)
+    a_game.pause()
     next_room_b = a_game.computer_b_move(next_room_b)
+    a_game.pause()
 
 print "Something went wrong. Loop ran too many times. Find the Bug!"
