@@ -346,7 +346,7 @@ class Game(object):
                 self.gathered_clues.append(suspect_selection)
                 ans = "y"
             elif weapon_selection in self.computer_a_hand:
-                print "Computer Player A has %s in their hand."
+                print "Computer Player A has %s in their hand." % weapon_selection.name
                 self.gathered_clues.append(weapon_selection)
                 ans = "y"
 
@@ -390,7 +390,7 @@ class Game(object):
                     self.gathered_clues.append(suspect_selection)
                     ans = "y"
                 elif weapon_selection in self.computer_b_hand:
-                    print "Computer Player B has %s in their hand."
+                    print "Computer Player B has %s in their hand." % weapon_selection.name
                     self.gathered_clues.append(weapon_selection)
                     ans = "y"
 
@@ -970,11 +970,11 @@ class Game(object):
                 print "Computer Player A has revealed a clue to Computer Player B."
 
             else:
-                if suspect_selection_b not in computer_a_hand:
+                if suspect_selection_b not in self.computer_a_hand:
                     answers_b.append(suspect_selection_b)
-                if weapon_selection_b not in computer_a_hand:
+                if weapon_selection_b not in self.computer_a_hand:
                     answers_b.append(weapon_selection_b)
-                if next_room_b not in computer_a_hand:
+                if next_room_b not in self.computer_a_hand:
                     answers_b.append(next_room_b)
 
             if len(self.answers_b) == 3:
@@ -994,7 +994,6 @@ a_game = Game()
 a_game.intro()
 a_game.pause()
 a_game.setup()
-a_game.pause()
 a_game.detective_notebook()
 a_game.move_explanation
 a_game.pause()
