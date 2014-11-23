@@ -416,7 +416,7 @@ class Game(object):
 
                     """
                     selection = input("Enter a number corresponding to your selection:  ")
-                    self.answers.append(suspects[i])
+                    self.answers.append(suspects[selection-1])
 
                 elif solution == 2:
                     print """What is the murder weapon?
@@ -430,7 +430,7 @@ class Game(object):
 
                      """
                     selection = input("Enter a number corresponding to your selection:  ")
-                    self.answer.append(weapons[i])
+                    self.answers.append(weapons[selection-1])
 
                 else:
                     print """Where was the crime scene:
@@ -447,7 +447,7 @@ class Game(object):
 
                     """
                     selection = input("Enter a number corresponding to your selection:  ")
-                    self.answer.append(rooms[i])
+                    self.answers.append(rooms[selection-1])
 
                 print "Do you want to enter any other answers? Enter 'y' for 'yes' and 'n' for 'no'."
                 mark = raw_input(">  ")
@@ -455,7 +455,7 @@ class Game(object):
                 if len(self.answers) == 3:
                     print "You have indicated a murder, a murder weapon, and a crime scene."
                     print "This will now be checked against the confidential case file."
-                    if self.murderer in answers and self.murder_weapon in answers and self.crime_scene in answer:
+                    if self.murderer in self.answers and self.murder_weapon in self.answers and self.crime_scene in self.answers:
                         print "Congrats! You solved the crime!"
                         print "It was %s, with the %s, in the %s." % (self.murderer.name, self.murder_weapon.name, self.crime_scene.name)
                         exit
@@ -646,80 +646,118 @@ class Game(object):
 
     def player_move(self, next_room):
 
-        
-        roll = randint(0,5) + 1
-        print "You rolled a %d" % roll
-
-        prev_room = next_room
-
-        if roll == 1 or roll == 2:
-            next_room = rooms[randint(0, len(rooms)-1)]
-            while prev_room == next_room:
-                next_room = rooms[randint(0, len(rooms)-1)]
-            print "You proceed to %s" % next_room.name
-
-        elif roll == 3 or roll == 4:
-
-            option_a = rooms[randint(0, len(rooms)-1)]
-
-            option_b = rooms[randint(0, len(rooms)-1)]
-
-            while option_a == prev_room or option_b == prev_room or option_a == option_b:
-                option_a = rooms[randint(0, len(rooms)-1)]
-                option_b = rooms[randint(0, len(rooms)-1)]
-
-            print "You may go to the %s or the %s." % (option_a.name, option_b.name)
-            print "To proceed to the %s, enter 1." % option_a.name
-            print "To proceed to the %s, enter 2." % option_b.name
-
-            selection = input("> ")
-
-            if selection == 1:
-                next_room = option_a
-                print "You proceed to the %s." % option_a.name
-            elif selection == 2:
-                next_room = option_b
-                print "You proceed to the %s." % option_b.name
+        if next_room == kitchen:
+            print "Would you like to use the secret passage to the Study?"
+            passage = raw_input("Enter 'y' to use passage, enter 'n' to roll. ")
+            if passage == "y":
+                next_room = study
             else:
-                print "You entered an invalid key. I will select for you."
-                next_room = option_a
-                print "You proceed to the %s." % option_a.name
+                pass
+
+
+        elif next_room == study:
+            print "Would you like to use the secret passage to the Kitchen?"
+            passage = raw_input("Enter 'y' to use passage, enter 'n' to roll.")
+            if passage == "y":
+                next_room = kitchen
+            else:
+                pass
+
+        elif next_room == conservatory:
+            print "Would you like to use the secret passage to the Lounge?"
+            passage = raw_input("Enter 'y' to use passage, enter 'n' to roll.")
+            if passage == "y":
+                next_room = lounge
+            else:
+                pass
+
+        elif next_room == lounge:
+            print "Would you like to use the secret passage to the Conservatory?"
+            passage = raw_input("Enter 'y' to use passage, enter 'n' to roll.")
+            if passage == "y":
+                next_room = conservatory
+            else:
+                pass
 
         else:
+            passage = "n"
 
-            option_a = rooms[randint(0, len(rooms)-1)]
+        if passage == "y":
+            pass
+        else:
+            roll = randint(0,5) + 1
+            print "You rolled a %d" % roll
 
-            option_b = rooms[randint(0, len(rooms)-1)]
+            prev_room = next_room
 
-            while option_a == prev_room or option_b == prev_room or option_a == option_b:
+            if roll == 1 or roll == 2:
+                next_room = rooms[randint(0, len(rooms)-1)]
+                while prev_room == next_room:
+                    next_room = rooms[randint(0, len(rooms)-1)]
+                print "You proceed to %s" % next_room.name
+
+            elif roll == 3 or roll == 4:
+
                 option_a = rooms[randint(0, len(rooms)-1)]
+
                 option_b = rooms[randint(0, len(rooms)-1)]
 
-            option_c = rooms[randint(0, len(rooms)-1)]
+                while option_a == prev_room or option_b == prev_room or option_a == option_b:
+                    option_a = rooms[randint(0, len(rooms)-1)]
+                    option_b = rooms[randint(0, len(rooms)-1)]
 
-            while option_c == prev_room or option_c == option_a or option_c == option_b:
+                print "You may go to the %s or the %s." % (option_a.name, option_b.name)
+                print "To proceed to the %s, enter 1." % option_a.name
+                print "To proceed to the %s, enter 2." % option_b.name
+
+                selection = input("> ")
+
+                if selection == 1:
+                    next_room = option_a
+                    print "You proceed to the %s." % option_a.name
+                elif selection == 2:
+                    next_room = option_b
+                    print "You proceed to the %s." % option_b.name
+                else:
+                    print "You entered an invalid key. I will select for you."
+                    next_room = option_a
+                    print "You proceed to the %s." % option_a.name
+
+            else:
+
+                option_a = rooms[randint(0, len(rooms)-1)]
+
+                option_b = rooms[randint(0, len(rooms)-1)]
+
+                while option_a == prev_room or option_b == prev_room or option_a == option_b:
+                    option_a = rooms[randint(0, len(rooms)-1)]
+                    option_b = rooms[randint(0, len(rooms)-1)]
+
                 option_c = rooms[randint(0, len(rooms)-1)]
 
-            print "You may go to the %s, or the %s, or the %s." % (option_a.name, option_b.name, option_c.name)
-            print "To proceed to the %s, enter 1." % option_a.name
-            print "To proceed to the %s, enter 2." % option_b.name
-            print "To proceed to the %s, enter 3." % option_c.name
+                while option_c == prev_room or option_c == option_a or option_c == option_b:
+                    option_c = rooms[randint(0, len(rooms)-1)]
 
-            selection = input("> ")
+                print "You may go to the %s, or the %s, or the %s." % (option_a.name, option_b.name, option_c.name)
+                print "To proceed to the %s, enter 1." % option_a.name
+                print "To proceed to the %s, enter 2." % option_b.name
+                print "To proceed to the %s, enter 3." % option_c.name
 
-            if selection == 1:
-                next_room = option_a
-                print "You proceed to the %s." % option_a.name
-            elif selection == 2:
-                next_room = option_b
-                print "You proceed to the %s." % option_b.name
-            elif selection == 3:
-                next_room = option_c
-                print "You proceed to the %s." % option_c.name
-            else:
-                print "You entered an invalid key. I will select for you."
-                next_room = option_a
-                print "You proceed to the %s." % option_a.name
+                selection = input("> ")
+
+                if selection == 1:
+                    next_room = option_a
+                    print "You proceed to the %s." % option_a.name
+                elif selection == 2:
+                    next_room = option_b
+                    print "You proceed to the %s." % option_b.name
+                elif selection == 3:
+                    next_room = option_c
+                    print "You proceed to the %s." % option_c.name
+                else:
+                    print "You entered an invalid key. I will select for you."
+                    next_room = option_a
+                    print "You proceed to the %s." % option_a.name
 
         return next_room
 
@@ -793,7 +831,7 @@ class Game(object):
             selection = input(">  ")
             if selection == 1:
                 print "You showed Player A %s." % suspect_selection_a.name
-                self.gathered_clues_a(suspect_selection_a)
+                self.gathered_clues_a.append(suspect_selection_a)
             elif selection == 2:
                 print "You showed Player A %s." % weapon_selection_a.name
                 self.gathered_clues_a.append(weapon_selection_a)
@@ -801,11 +839,11 @@ class Game(object):
                 print "You showed Player A %s." % next_room_a.name
                 self.gathered_clues_a.append(next_room_a)
             else:
-                if suspect_selection_a not in computer_a_hand:
+                if suspect_selection_a not in self.computer_a_hand:
                     answers_a.append(suspect_selection_a)
-                if weapon_selection_a not in computer_a_hand:
+                if weapon_selection_a not in self.computer_a_hand:
                     answers_a.append(weapon_selection_a)
-                if next_room_a not in computer_a_hand:
+                if next_room_a not in self.computer_a_hand:
                     answers_a.append(next_room_a)
 
             if len(self.answers_a) == 3:
@@ -897,11 +935,11 @@ class Game(object):
                 print "Computer Player A has revealed a clue to Computer Player B."
 
             else:
-                if suspect_selection_b not in computer_b_hand:
+                if suspect_selection_b not in computer_a_hand:
                     answers_b.append(suspect_selection_b)
-                if weapon_selection_b not in computer_b_hand:
+                if weapon_selection_b not in computer_a_hand:
                     answers_b.append(weapon_selection_b)
-                if next_room_b not in computer_b_hand:
+                if next_room_b not in computer_a_hand:
                     answers_b.append(next_room_b)
 
             if len(self.answers_b) == 3:
